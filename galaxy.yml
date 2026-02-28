@@ -1,0 +1,23 @@
+namespace: sadyr0012
+name: infralab
+version: 0.0.0
+readme: README.md
+
+authors:
+- Sadyr sadyr0012@gmail.com
+
+description: Ansible collection for deploy and manage homelab infrastructure objects.
+license:
+- GPL-2.0-or-later
+
+license_file: ''
+tags: []
+
+dependencies: {}
+repository: http://example.com/repository
+documentation: http://docs.example.com
+homepage: http://example.com
+issues: http://example.com/issue/tracker
+build_ignore: []
+
+
