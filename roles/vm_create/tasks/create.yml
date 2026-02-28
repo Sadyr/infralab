@@ -1,0 +1,56 @@
+---
+# tasks file for roles/vm_creation
+
+- name: Check if source image exists
+  stat:
+    path: "{{ image_source_path }}"
+  register: image_source_stat
+
+- name: Fail if source image does not exist
+  fail:
+    msg: "Source image not found at {{ image_source_path }}"
+  when: not image_source_stat.stat.exists
+
+- name: Create directories for cloud-init files
+  file:
+    path: "{{ cloud_init_output_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Generate user-data file
+  template: 
+    src: "{{ user_data_template }}"
+    dest: "{{ cloud_init_output_path }}/user-data"
+
+- name: Generate network-config file
+  template:
+    src: "{{ network_data_template }}"
+    dest: "{{ cloud_init_output_path }}/network-config"
+
+- name: Generate meta-data file
+  template:
+    src: "{{ meta_data_template }}"
+    dest: "{{ cloud_init_output_path }}/meta-data"
+
+- name: Create virtual disk
+  command:
+    cmd: "qemu-img create -b {{ image_source_path }} -f qcow2 -F qcow2 {{ pool_path }}/{{ volume_name }} {{ volume_size }} "
+  args:
+    creates: "{{ pool_path }}/{{ volume_name }}"
+
+
+- name: Create virtual machine
+  command:
+    cmd: >
+      virt-install
+      --name={{ domain }}
+      --disk path={{pool_path}}/{{ volume_name }},format=qcow2
+      --os-variant={{ os_variant }}
+      --network network={{ network }}
+      --graphics vnc,listen=0.0.0.0 --noautoconsole
+      --ram={{ ram_in_mb }}
+      --vcpus={{ vcpus }}
+      --autostart
+      --console pty,target_type=serial
+      --cloud-init user-data={{ cloud_init_output_path }}/user-data,meta-data={{ cloud_init_output_path }}/meta-data,network-config={{ cloud_init_output_path }}/network-config
+

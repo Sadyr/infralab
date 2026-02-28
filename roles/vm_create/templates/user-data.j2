@@ -1,0 +1,21 @@
+#cloud-config
+hostname: {{ domain }}
+
+
+{% for user in users %}
+users:
+  - name: {{ user.name }}
+    gecos: {{ user.description }}
+    sudo: {{ user.sudo }}
+    shell: {{ user.shell }}
+    lock_passwd: false
+    passwd: {{ user.password_in_hash }}
+    ssh_authorized_keys:
+    {% for key in  ssh_authorized_keys  %}
+    - {{ key }}
+    {% endfor %}
+{% endfor %}
+
+ssh_pwauth: True ## This line enables ssh password authentication
+resize_rootfs: True
+
