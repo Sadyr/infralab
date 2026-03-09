@@ -1,0 +1,7 @@
+{{ ansible_managed }}
+
+GREEN="\[\e[32m\]"
+RED="\[\e[31m\]"
+RESET="\[\e[0m\]"
+
+export PS1="[${GREEN}\u${RESET}@${RED}\h${RESET} \W]\\$ "

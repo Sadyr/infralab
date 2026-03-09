@@ -1,7 +1,8 @@
 ---
 init_timezone: UTC
-init_packages_update: True
 init_hosts_group: all
+
+init_packages_update: True
 init_packages_default:
   - vim
   - bash-completion
@@ -13,4 +14,3 @@ init_packages_default:
   - nc
   - nmap
   - curl
-
