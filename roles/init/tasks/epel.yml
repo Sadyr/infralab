@@ -1,0 +1,7 @@
+---
+- name: Configure epel repository on managed node
+  ansible.builtin.dnf:
+    name: epel-release
+    state: latest
+
+

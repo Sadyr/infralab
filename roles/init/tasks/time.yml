@@ -1,0 +1,15 @@
+---
+- name: Ensure chrony package is installed
+  ansible.builtin.dnf:
+    name: chrony
+    state: present
+
+- name: Ensure chronyd service is started and enabled
+  ansible.builtin.systemd_service:
+    name: chronyd
+    state: started
+    enabled: true
+
+- name: Ensure correct timezone is set
+  ansible.builtin.timezone:
+    name: "{{ init_timezone }}"

@@ -1,0 +1,16 @@
+---
+init_timezone: UTC
+init_packages_update: True
+init_hosts_group: all
+init_packages_default:
+  - vim
+  - bash-completion
+  - policycoreutils-python-utils
+  - net-tools
+  - bind-utils
+  - tcpdump
+  - mtr
+  - nc
+  - nmap
+  - curl
+

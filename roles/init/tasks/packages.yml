@@ -1,0 +1,12 @@
+---
+- name: Update system
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  when: init_packages_update | bool == True
+
+
+- name: Install packages 
+  ansible.builtin.dnf:
+    name: "{{ init_packages_default }}"
+    state: present

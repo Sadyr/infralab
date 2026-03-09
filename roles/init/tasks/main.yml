@@ -1,0 +1,13 @@
+---
+- import_tasks: time.yml
+  tags: init.time
+
+- import_tasks: epel.yml
+  tags: init.epel
+
+- import_tasks: packages.yml
+  tags: init.packages
+
+- import_tasks: hosts.yml
+  tags: init.hosts
+
