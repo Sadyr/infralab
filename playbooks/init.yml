@@ -1,0 +1,6 @@
+---
+- name: Run init setup for hosts
+  hosts: all
+  become: true
+  roles:
+    - name: infralab.init
