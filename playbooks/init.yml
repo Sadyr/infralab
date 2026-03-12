@@ -3,4 +3,4 @@
   hosts: all
   become: true
   roles:
-    - name: infralab.init
+    - name: sadyr0012.infralab.init
