@@ -1,4 +1,8 @@
 ---
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
 - name: Deploy hosts file for managed nodes
   ansible.builtin.template:
     src: hosts.j2

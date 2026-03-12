@@ -1,4 +1,7 @@
 ---
+- import_tasks: dnf.yml
+  tags: init.dnf
+
 - import_tasks: time.yml
   tags: init.time
 
@@ -8,7 +11,7 @@
 - import_tasks: packages.yml
   tags: init.packages
 
-- import_tasks: hosts.yml
+- import_tasks: host.yml
   tags: init.hosts
 
 - import_tasks: bash_profile.yml
