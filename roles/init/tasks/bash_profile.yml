@@ -1,6 +1,6 @@
 ---
 - name: Deploy custom global bash profile
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: init_bash_profile.sh.j2
     dest: /etc/profile.d/init_profile.sh
     owner: root

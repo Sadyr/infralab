@@ -11,5 +11,5 @@
     enabled: true
 
 - name: Ensure correct timezone is set
-  ansible.builtin.timezone:
+  community.general.timezone:
     name: "{{ init_timezone }}"
