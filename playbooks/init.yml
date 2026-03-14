@@ -1,6 +1,0 @@
----
-- name: Run init setup for hosts
-  hosts: all
-  become: true
-  roles:
-    - name: sadyr0012.infralab.init
