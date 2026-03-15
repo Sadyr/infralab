@@ -13,7 +13,11 @@ license:
 license_file: ''
 tags: []
 
-dependencies: {}
+dependencies:
+  community.libvirt: ">=2.1.0"
+  community.general: ">=12.0.0"
+  ansible.posix: ">=2.1.0"
+
 repository: http://example.com/repository
 documentation: http://docs.example.com
 homepage: http://example.com
