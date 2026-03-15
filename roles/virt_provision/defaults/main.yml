@@ -1,5 +1,5 @@
 ---
-vmc_cloudinit_path: /storage/ssd01
+virt_provision_cloudinit_path: /storage/ssd01
   #vm_create_image_path: "/storage/hdd/almalinux_9_cloud_base_image.qcow2"
   #vm_create_network:
   #name: prod-routed
