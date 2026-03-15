@@ -1,0 +1,20 @@
+---
+- name: List available networks on virt node
+  community.libvirt.virt_net:
+    command: list_nets
+  register: __virt_network_list
+
+- name: Handle when default network is present on virt node
+  block:
+    - name: Stop the default network
+      community.libvirt.virt_net:
+        command: destroy
+        name: default
+
+    - name: Undefine default network
+      community.libvirt.virt_net:
+        command: undefine
+        name: default
+  when: 
+    - __virt_network_list['list_nets'] | length > 0
+    - "'default' in __virt_network_list['list_nets']"
