@@ -1,0 +1,5 @@
+---
+- name: Ensure required packages for virtualization node is installed
+  ansible.builtin.dnf:
+    name: "{{ virt_node_packages }}"
+    state: present
