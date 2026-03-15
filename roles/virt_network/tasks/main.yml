@@ -1,2 +1,4 @@
 ---
 - ansible.builtin.import_tasks: network.yml
+- ansible.builtin.import_tasks: bridge.yml
+- ansible.builtin.import_tasks: firewalld.yml

@@ -1,0 +1,14 @@
+---
+- name: Create bridge devices for virtual machines
+  community.general.nmcli:
+    autoconnect: true
+    autoconnect_priority: 999
+    conn_name: br-int
+    conn_reload: true
+    ifname: br-int
+    ip4: 
+      - 10.10.1.1/24
+    state: present
+    stp: false
+    type: bridge
+    zone: internal
