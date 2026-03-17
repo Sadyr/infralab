@@ -12,3 +12,11 @@
     zone: public
     permanent: true
     state: enabled
+
+- name: Ensure forwarding is enabled in internal zone
+  ansible.posix.firewalld:
+    immediate: true
+    zone: internal
+    permanent: true
+    forward: true
+    state: enabled
