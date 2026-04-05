@@ -1,15 +1,2 @@
 ---
-virt_network_bridges:
-  - name: mgmt
-    subnet: 10.10.2.0/24
-    ip:
-      - 10.10.2.1
-  - name: int
-    subnet: 10.10.4.0/24
-    ip:
-      - 10.10.4.1
-  - name: ext
-    subnet: 10.10.6.0/24
-    ip:
-      - 10.10.6.1
-
+virt_network_bridges: []

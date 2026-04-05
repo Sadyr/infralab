@@ -1,5 +1,5 @@
 ---
-- name: Create bridge devices for virtual machines
+- name: Configure bridge devices for virtual machines
   community.general.nmcli:
     autoconnect: true
     autoconnect_priority: 999
