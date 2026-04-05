@@ -20,3 +20,14 @@
     permanent: true
     forward: true
     state: enabled
+
+- name: Deploy firewalld policy
+  ansible.builtin.template:
+    src: internal-public.xml.j2
+    dest: /etc/firewalld/policies/internal-public.xml
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - firewalld reload
+
