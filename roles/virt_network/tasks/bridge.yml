@@ -3,12 +3,12 @@
   community.general.nmcli:
     autoconnect: true
     method4: "{{ item['method4'] | default('manual') }}"
-    method6: "{{ item['method6'] | default('manual') }}"
+    method6: "{{ item['method6'] | default('disabled') }}"
     autoconnect_priority: 999
     conn_name: "br-{{ item['name'] }}"
     conn_reload: true
     ifname: "br-{{ item['name'] }}"
-    ip4: "{{ item['ip'] | default(omit) }}"
+    ip4: "{{ item['ip4'] | default(omit) }}"
     state: "{{ item['state'] | default('present') }}"
     stp: false
     type: bridge
