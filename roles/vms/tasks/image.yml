@@ -1,10 +1,10 @@
 ---
 - name: Check if source image exists
   stat:
-    path: "{{ vm_create_image_path }}"
-  register: __vm_create_image_info
+    path: "{{ vms_image }}"
+  register: __vms_image
 
 - name: Fail if source image does not exist
   fail:
-    msg: "Source image not found at {{ vm_create_image_path }}"
-  when: not vm_create_image_info.stat.exists
+    msg: "Source image not found at {{ vms_image }}"
+  when: not __vms_image.stat.exists

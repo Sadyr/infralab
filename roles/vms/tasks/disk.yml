@@ -1,45 +1,8 @@
 ---
 - name: Create virtual disk
   command:
-    cmd: "qemu-img create -b {{ image_source_path }} -f qcow2 -F qcow2 {{ pool_path }}/{{ volume_name }} {{ volume_size }} "
+    cmd: "qemu-img create -b {{ vms_image }} -f qcow2 -F qcow2 {{ item['disk']['path'] }}/{{ item['name'] }}.qcow2 {{ item['disk']['size'] ~ 'G' }}"
   args:
-    creates: "{{ pool_path }}/{{ volume_name }}"
-
-
-domain: webcloud.kz
-hosts:
-  - qemu+ssh://cloudci@lab.cloudit.kz
-vms:
-  - name: lb01
-    connect: "{{ hosts[0] }}"
-    memory: 2048
-    vcpus: 4
-    cdrom: /isos/rockylinux.iso
-    disk:
-      size: 40G
-      path: path_to_disk
-    network: mynet
-    autostart: true
-    graphics: vnc,listen=127.0.0.1 --autoconsole
-    console: pty,target_type=serial
-    cloud_init:
-      user_data: user-data-file_path
-      meta_data: meta-data-file-path
-      network_config: network-config-path
-
-- name: Create virtual machine
-  command:
-    cmd: >
-      virt-install
-      --connnect qemu+ssh://ssauytov@lab.cloudit.kz/system
-      --name={{ item['name'] }}
-      --disk path={{pool_path}}/{{ volume_name }},format=qcow2
-      --os-variant={{ os_variant }}
-      --network network={{ network }}
-      --graphics vnc,listen=127.0.0.1 --noautoconsole
-      --ram={{ ram_in_mb }}
-      --vcpus={{ vcpus }}
-      --autostart
-      --console pty,target_type=serial
-      --cloud-init user-data={{ cloud_init_output_path }}/user-data,meta-data={{ cloud_init_output_path }}/meta-data,network-config={{ cloud_init_output_path }}/network-config
+    creates: "{{ item['disk']['path'] }}/{{ item['name'] }}.qcow2"
+  loop: "{{ vms }}"
 

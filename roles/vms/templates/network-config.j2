@@ -6,7 +6,7 @@ network:
       dhcp4: false
       addresses:
         - {{ network['ip'] }}
-      {{ 'gateway4:' ~ network['gateway'] if network['gateway'] is defined}}
+      {{ 'gateway4: ' ~ network['gateway'] if network['gateway'] is defined}}
       nameservers:
         addresses: {{ vms_ns_servers }}
         search:

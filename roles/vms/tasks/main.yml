@@ -1,2 +1,7 @@
 ---
 - ansible.builtin.import_tasks: cloudinit.yml
+- ansible.builtin.import_tasks: image.yml
+- ansible.builtin.import_tasks: disk.yml
+- ansible.builtin.import_tasks: vms.yml
+
+
