@@ -4,5 +4,7 @@
     cmd: "qemu-img create -b {{ vms_image }} -f qcow2 -F qcow2 {{ item['disk']['path'] }}/{{ item['name'] }}.qcow2 {{ item['disk']['size'] ~ 'G' }}"
   args:
     creates: "{{ item['disk']['path'] }}/{{ item['name'] }}.qcow2"
+  when:
+    - item['name'] not in __vms_on_node
+    - item['state'] is defined and item['state'] == "present"
   loop: "{{ vms }}"
-

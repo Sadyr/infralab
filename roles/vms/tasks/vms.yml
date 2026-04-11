@@ -1,17 +1,14 @@
 ---
-- name: Get all VMS on the hypervisor
-  command:
-    cmd: "virsh list --all --name"
-  register: __vms_virsh_list
+- name: Delete VMs
+  shell: |
+    virsh destroy  --domain  {{ item['name'] }}
+    virsh undefine --domain {{ item['name'] }} --remove-all-storage
+  when:
+    - item['state'] is defined and item['state'] == "absent"
+    - item['name'] in __vms_on_node
+  loop: "{{ vms }}"
 
-- name: Extract all VM list from virsh command output
-  set_fact:
-    __vms_on_node: "{{ __vms_virsh_list.stdout_lines | list }}"
-
-- debug:
-    var: __vms_on_node
-
-- name: Create VM
+- name: Create VMs
   command: >
     virt-install
     --name {{ item.name }}
@@ -27,5 +24,7 @@
     --network bridge={{ net.bridge }},model=virtio
     {% endfor %}
     --cloud-init user-data={{ item.disk.path }}/{{ item.name }}-user-data,meta-data={{ item.disk.path }}/{{ item.name }}-meta-data,network-config={{ item.disk.path }}/{{ item.name }}-network-config
-  when: item['name'] not in __vms_on_node
+  when: 
+    - item['name'] not in __vms_on_node
+    - item['state'] is defined and item['state'] == "present"
   loop: "{{ vms }}"

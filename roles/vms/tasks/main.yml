@@ -1,4 +1,14 @@
 ---
+- name: Get all VMS on the hypervisor
+  command:
+    cmd: "virsh list --all --name"
+  register: __vms_virsh_list
+  changed_when: false
+
+- name: Extract all VM list from virsh command output
+  set_fact:
+    __vms_on_node: "{{ __vms_virsh_list.stdout_lines | list }}"
+
 - ansible.builtin.import_tasks: cloudinit.yml
 - ansible.builtin.import_tasks: image.yml
 - ansible.builtin.import_tasks: disk.yml

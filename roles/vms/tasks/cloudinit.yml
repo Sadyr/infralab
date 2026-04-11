@@ -3,16 +3,25 @@
   template:
     src: "user-data.j2"
     dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-user-data"
+  when:
+    - item['name'] not in __vms_on_node
+    - item['state'] is defined and item['state'] == "present"
   loop: "{{ vms }}"
 
 - name: Generate network-config file
   template:
     src: "network-config.j2"
     dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-network-config"
+  when:
+    - item['name'] not in __vms_on_node
+    - item['state'] is defined and item['state'] == "present"
   loop: "{{ vms }}"
 
 - name: Generate meta-data file
   template:
     src: "meta-data.j2"
     dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-meta-data"
+  when:
+    - item['name'] not in __vms_on_node
+    - item['state'] is defined and item['state'] == "present"
   loop: "{{ vms }}"
