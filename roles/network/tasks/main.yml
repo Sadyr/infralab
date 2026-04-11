@@ -1,0 +1,24 @@
+---
+- name: Configure loopback interface
+  community.general.nmcli:
+    conn_name: lo
+    conn_reload: true
+    ip4:
+      - "127.0.0.1/8"
+      - "{{ loopback }}"
+    state: present
+  when: loopback is defined
+
+    #- name: Configure network on managed node
+    #  community.general.nmcli:
+    #    autoconect: true
+    #    autoconnect_priority: 999
+    #    conn_name: system_eth0
+    #    conn_reload: true
+    #    ip4:
+    #    ip6:
+    #    method4:
+    #    method6:
+    #    state: present
+    #    stp: false
+    #    type:

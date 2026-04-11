@@ -17,7 +17,7 @@
     --disk path={{ item.disk.path }}/{{ item.name }}.qcow2,format=qcow2
     --os-variant {{ item['os-variant'] }}
     --import
-    --graphics vnc,listen=0.0.0.0
+    --graphics vnc,listen=127.0.0.1
     --noautoconsole
     --autostart
     {% for net in item.networks %}
