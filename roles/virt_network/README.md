@@ -27,4 +27,24 @@ virt_network_bridges:
     ip:
       - 10.10.6.1
 
+---
+virt_network_bridges:
+  - name: mgmt
+    state: present
+    ip4: 10.10.0.1/24
+
+  - name: l2-fabric
+    state: absent
+    method4: disabled
+    method6: disabled
+
+  - name: int
+    state: absent
+    method6: disabled
+    method4: disabled
+
+  - name: ext
+    state: absent
+    ip4: "{{ ext_gateway }}"
+
 ```
