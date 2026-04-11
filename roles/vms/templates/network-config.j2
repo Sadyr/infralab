@@ -1,0 +1,14 @@
+network:
+  version: 2
+  ethernets:
+{% for network in item['networks'] %}
+    {{ network['interface'] }}:
+      dhcp4: false
+      addresses:
+        - {{ network['ip'] }}
+      {{ 'gateway4:' ~ network['gateway'] if network['gateway'] is defined}}
+      nameservers:
+        addresses: {{ vms_ns_servers }}
+        search:
+          - {{ vms_domain }}
+{% endfor %}

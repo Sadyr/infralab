@@ -1,0 +1,14 @@
+#cloud-config
+hostname: {{ item['name'] }}
+
+users:
+{% for user in vms_users %}
+  - name: {{ user.name }}
+    {{ "sudo: " ~  user.sudo if user.sudo is defined }}
+    lock_passwd: false
+    passwd: {{ user.password_in_hash  if user.password_in_hash is defined}}
+    {{ "ssh_authorized_keys: " ~ user.authorized_keys if user.authorized_keys is defined }}
+{% endfor %}
+
+ssh_pwauth: True ## This line enables ssh password authentication
+resize_rootfs: True

@@ -1,0 +1,18 @@
+---
+- name: Generate user-data file
+  template:
+    src: "user-data.j2"
+    dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-user-data"
+  loop: "{{ vms }}"
+
+- name: Generate network-config file
+  template:
+    src: "network-config.j2"
+    dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-network-config"
+  loop: "{{ vms }}"
+
+- name: Generate meta-data file
+  template:
+    src: "meta-data.j2"
+    dest: "{{ item['disk']['path'] }}/{{ item['name'] }}-meta-data"
+  loop: "{{ vms }}"
