@@ -9,4 +9,6 @@ network_bridges: []
 #  method4: disabled
 #  method6: disabled
 
-#
+network_packages:
+  - frr
+
