@@ -17,16 +17,17 @@
   ansible.builtin.template:
     src: server01.frr.conf
     dest: /etc/frr/frr.conf
+  when: "'server01' in inventory_hostname "
   notify:
     - restart frr
 
-- name: Deploy frr conf for server01
+- name: Deploy frr conf for server02
   ansible.builtin.template:
     src: server02.frr.conf
     dest: /etc/frr/frr.conf
+  when: "'server02' in inventory_hostname"
   notify:
     - restart frr
-
 
 
 - name: Ensure service frr is enabled and started
@@ -44,13 +45,6 @@
       - "{{ loopback }}"
     state: present
   when: loopback is defined
-
-
-    #- name: Configure static routing for loopback interface
-    #  community.general.nmcli:
-    #    conn_name: "System {{ data_interface1 }}"
-    #    routes4_extended:
-    #      ip: "{{ loopback_subnet }}"
 
 - name: Configure bridge devices for virtual machines
   community.general.nmcli:
