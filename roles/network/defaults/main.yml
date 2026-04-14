@@ -1,2 +1,12 @@
 ---
-# defaults file for network
+network_bridges: []
+#- name: mgmt
+#  state: present
+#  ip4: 10.10.0.1/24
+
+#- name: date
+#  state: absent
+#  method4: disabled
+#  method6: disabled
+
+#
