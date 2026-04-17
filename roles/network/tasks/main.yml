@@ -13,7 +13,7 @@
     - bgpd
     - zebra
 
-- name: Deploy frr conf for server01
+- name: Deploy frr conf for managed nodes
   ansible.builtin.template:
     src: "{{ inventory_hostname_short }}.frr.conf"
     dest: /etc/frr/frr.conf
@@ -52,3 +52,20 @@
     type: bridge
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
+
+
+- name: Deploy dc.sh for managed nodes
+  ansible.builtin.template:
+    src: "{{ inventory_hostname_short }}.sh"
+    dest: /usr/local/sbin/dc
+    mode: "0755"
+  ignore_errors: true
+  notify:
+    - restart frr
+
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
