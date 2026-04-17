@@ -15,20 +15,11 @@
 
 - name: Deploy frr conf for server01
   ansible.builtin.template:
-    src: server01.frr.conf
+    src: "{{ inventory_hostname_short }}.frr.conf"
     dest: /etc/frr/frr.conf
-  when: "'server01' in inventory_hostname "
+  ignore_errors: true
   notify:
     - restart frr
-
-- name: Deploy frr conf for server02
-  ansible.builtin.template:
-    src: server02.frr.conf
-    dest: /etc/frr/frr.conf
-  when: "'server02' in inventory_hostname"
-  notify:
-    - restart frr
-
 
 - name: Ensure service frr is enabled and started
   ansible.builtin.systemd_service:
@@ -61,6 +52,3 @@
     type: bridge
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
-  
-
-
