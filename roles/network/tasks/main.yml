@@ -21,6 +21,7 @@
     src: "{{ inventory_hostname_short }}.frr.conf"
     dest: /etc/frr/frr.conf
   ignore_errors: true
+  tags: network.frr.config
   notify:
     - restart frr
 
@@ -46,16 +47,33 @@
     method4: "{{ item['method4'] | default('disabled') }}"
     method6: "{{ item['method6'] | default('disabled') }}"
     autoconnect_priority: 999
-    conn_name: "br-{{ item['name'] }}"
+    conn_name: "br_{{ item['name'] }}"
     conn_reload: true
-    ifname: "br-{{ item['name'] }}"
+    ifname: "br_{{ item['name'] }}"
     ip4: "{{ item['ip4'] | default(omit) }}"
     state: "{{ item['state'] | default('present') }}"
     stp: false
     type: bridge
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
+  tags: network.bridge
 
+    #- name: Create VxLan interfaces
+    #  community.general.nmcli:
+    #    type: vxlan
+    #    conn_name: "vxlan{{ item['id'] }}"
+    #    ifname: "vxlan{{ item['id'] }}"
+    #    vxlan_id: "{{ item['id'] }}"
+    #    vxlan_local: "{{ item['loopback'] }}" 
+    #    slave_type: bridge
+    #    master: "br_{{ item['bridge'] }}"
+    #    state: "{{ item['state'] }}"
+    #
+- name: Create vxlans
+  ansible.builtin.shell: "ip link add vxlan{{ item['id']}} type vxlan id {{  item['id'] }} dstport {{ item['dstport'] }} local {{ item['loopback'] }} nolearning; ip link set vxlan{{ item['id'] }} master br_{{ item['bridge'] }} ;ip link set vxlan{{ item['id']}} up; ip link set br_{{ item['bridge'] }} up" 
+  loop: "{{ network_vxlans }}"
+  when: network_vxlans | length > 0
+  tags: network.vxlan
 
 - ansible.posix.sysctl:
     name: net.ipv4.ip_forward

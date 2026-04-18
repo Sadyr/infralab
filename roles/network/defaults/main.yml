@@ -12,3 +12,8 @@ network_bridges: []
 network_packages:
   - frr
 
+network_vxlans: []
+#  - id: 200
+#    loopback: 172.16.0.100
+#    bridge: ext_api
+#    state: present
