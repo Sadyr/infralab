@@ -41,6 +41,16 @@
     state: present
   when: loopback is defined
 
+- name: Configure VRF
+  community.general.nmcli:
+    type: vrf
+    ifname: vrf_lb
+    table: 1000
+    state: present
+    conn_name: vrf_lb
+    method4: disabled
+    method6: disabled
+
 - name: Configure bridge devices for virtual machines
   community.general.nmcli:
     autoconnect: true
@@ -54,21 +64,12 @@
     state: "{{ item['state'] | default('present') }}"
     stp: false
     type: bridge
+    master: "{{ item['master'] | default(omit) }}"
+    slave_type: "{{ item['slave_type'] | default(omit) }}"
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
   tags: network.bridge
 
-    #- name: Create VxLan interfaces
-    #  community.general.nmcli:
-    #    type: vxlan
-    #    conn_name: "vxlan{{ item['id'] }}"
-    #    ifname: "vxlan{{ item['id'] }}"
-    #    vxlan_id: "{{ item['id'] }}"
-    #    vxlan_local: "{{ item['loopback'] }}" 
-    #    slave_type: bridge
-    #    master: "br_{{ item['bridge'] }}"
-    #    state: "{{ item['state'] }}"
-    #
 - name: Create vxlans
   ansible.builtin.shell: "ip link add vxlan{{ item['id']}} type vxlan id {{  item['id'] }} dstport {{ item['dstport'] }} local {{ item['loopback'] }} nolearning; ip link set vxlan{{ item['id'] }} master br_{{ item['bridge'] }} ;ip link set vxlan{{ item['id']}} up; ip link set br_{{ item['bridge'] }} up" 
   loop: "{{ network_vxlans }}"
@@ -89,4 +90,3 @@
   tags:
     - never
     - frr.restart
-
