@@ -3,3 +3,8 @@
   ansible.builtin.systemd_service:
     name: frr
     state: restarted
+
+- name: restart nm
+  ansible.builtin.systemd_service:
+    name: Network-Manager
+    state: restarted

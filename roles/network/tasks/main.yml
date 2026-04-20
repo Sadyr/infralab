@@ -1,8 +1,9 @@
 ---
 - name: Install required packages
   ansible.builtin.dnf:
-    name: "{{ network_packages }}"
+    name: frr #frr-stable-repo #https://rpm.frrouting.org/repo/frr-stable-repo.el9.noarch.rpm
     state: present
+    disable_gpg_check: true
 
 - name: Enable FRR daemons
   ansible.builtin.lineinfile:
@@ -50,6 +51,7 @@
     conn_name: vrf_lb
     method4: disabled
     method6: disabled
+  when: "'lb' in inventory_hostname"
 
 - name: Configure bridge devices for virtual machines
   community.general.nmcli:
@@ -69,6 +71,8 @@
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
   tags: network.bridge
+  notify: 
+    - restart nm
 
 - name: Create vxlans
   ansible.builtin.shell: "ip link add vxlan{{ item['id']}} type vxlan id {{  item['id'] }} dstport {{ item['dstport'] }} local {{ item['loopback'] }} nolearning; ip link set vxlan{{ item['id'] }} master br_{{ item['bridge'] }} ;ip link set vxlan{{ item['id']}} up; ip link set br_{{ item['bridge'] }} up" 
