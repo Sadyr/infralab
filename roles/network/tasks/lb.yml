@@ -2,10 +2,10 @@
 - name: Configure VRF
   community.general.nmcli:
     type: vrf
-    ifname: vrf_lb
+    ifname: vrf_anycast
     table: 1000
     state: present
-    conn_name: vrf_lb
+    conn_name: vrf_anycast
     method4: disabled
     method6: disabled
   when: "'lb' in inventory_hostname"

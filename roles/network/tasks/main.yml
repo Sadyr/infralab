@@ -1,10 +1,13 @@
 ---
 - import_tasks: frr.yml
 - import_tasks: loopback.yml
+- import_tasks: lb.yml
+
 - import_tasks: br.yml
 - import_tasks: vxlan.yml
 - import_tasks: border.yml
 - import_tasks: test.yml
+  tags: network.test
 - import_tasks: lb.yml
 - import_tasks: client.yml
 

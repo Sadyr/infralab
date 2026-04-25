@@ -2,4 +2,5 @@
 - name: Configure static routing on client machine
   ansible.builtin.command: "ip route add 5.5.5.5 via 150.150.150.20 dev eth1"
   when: "'client' in inventory_hostname"
+  ignore_errors: true
 

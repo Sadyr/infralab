@@ -11,7 +11,10 @@
 
 - name: Deploy test script python
   template:
-    src: anycast.py.j2
-    dest: /usr/local/sbin
+    src: test.py.j2
+    dest: /usr/local/sbin/teststr
+    mode: "0755"
+    owner: root
+    group: root
   when: "'lb' in inventory_hostname or 'str' in inventory_hostname"
 

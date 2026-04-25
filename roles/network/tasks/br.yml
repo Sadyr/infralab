@@ -19,4 +19,3 @@
   tags: network.bridge
   notify:
     - restart nm
-
