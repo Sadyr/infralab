@@ -95,6 +95,12 @@
   when: network_vxlans | length > 0
   tags: network.vxlan
 
+- name: create bridge and vxlan on border
+  ansible.builtin.shell: "ip link add br_anycast type bridge; ip link set br_anycast master vrf_isp; ip link set br_anycast up; ip link add vxlan400 type vxlan id 400 dstport 4789 local 172.16.0.24 nolearning;  ip link set vxlan400 master br_anycast;  ip link set eth3 master vrf_isp;  ip route add 150.150.150.0/24  dev eth3;ip link set vxlan400 up; sysctl net.ipv4.fib_multipath_hash_policy=1"
+  when: "'border' in inventory_hostname"
+
+
+
 - ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: '1'
