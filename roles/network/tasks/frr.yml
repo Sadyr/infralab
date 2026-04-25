@@ -1,0 +1,48 @@
+---
+- name: Install required packages
+  ansible.builtin.dnf:
+    name: frr
+    state: present
+    disable_gpg_check: true
+
+- name: Enable FRR daemons
+  ansible.builtin.lineinfile:
+    path: /etc/frr/daemons
+    regexp: '^{{ item }}='
+    line: '{{ item }}=yes'
+  loop:
+    - bgpd
+    - zebra
+    - bfdd
+  notify:
+    - restart frr
+
+- name: Deploy frr conf for managed nodes
+  ansible.builtin.template:
+    src: "{{ inventory_hostname_short }}.frr.conf"
+    dest: /etc/frr/frr.conf
+  ignore_errors: true
+  tags: network.frr.config
+  notify:
+    - restart frr
+
+- name: Ensure service frr is enabled and started
+  ansible.builtin.systemd_service:
+    name: frr
+    state: started
+    enabled: true
+
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: restart frr
+  ansible.builtin.systemd_service:
+    name: frr
+    state: restarted
+  tags:
+    - never
+    - frr.restart

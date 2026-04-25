@@ -1,0 +1,6 @@
+---
+- name: Create vxlans
+  ansible.builtin.shell: "ip link add vxlan{{ item['id']}} type vxlan id {{  item['id'] }} dstport {{ item['dstport'] }} local {{ item['loopback'] }} nolearning; ip link set vxlan{{ item['id'] }} master br_{{ item['bridge'] }} ;ip link set vxlan{{ item['id']}} up; ip link set br_{{ item['bridge'] }} up"
+  loop: "{{ network_vxlans }}"
+  when: network_vxlans | length > 0
+  tags: network.vxlan

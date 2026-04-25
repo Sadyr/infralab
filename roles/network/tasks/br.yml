@@ -1,0 +1,22 @@
+---
+- name: Configure bridge devices for virtual machines
+  community.general.nmcli:
+    autoconnect: true
+    method4: "{{ item['method4'] | default('disabled') }}"
+    method6: "{{ item['method6'] | default('disabled') }}"
+    autoconnect_priority: 999
+    conn_name: "br_{{ item['name'] }}"
+    conn_reload: true
+    ifname: "br_{{ item['name'] }}"
+    ip4: "{{ item['ip4'] | default(omit) }}"
+    state: "{{ item['state'] | default('present') }}"
+    stp: false
+    type: bridge
+    master: "{{ item['master'] | default(omit) }}"
+    slave_type: "{{ item['slave_type'] | default(omit) }}"
+  loop: "{{ network_bridges }}"
+  when: network_bridges | length > 0
+  tags: network.bridge
+  notify:
+    - restart nm
+

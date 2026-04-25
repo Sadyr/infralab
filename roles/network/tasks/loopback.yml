@@ -1,0 +1,10 @@
+---
+- name: Configure loopback interface
+  community.general.nmcli:
+    conn_name: lo
+    conn_reload: true
+    ip4:
+      - "127.0.0.1/8"
+      - "{{ loopback }}"
+    state: present
+  when: loopback is defined

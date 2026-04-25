@@ -1,0 +1,31 @@
+
+- name: Configure VRF
+  community.general.nmcli:
+    type: vrf
+    ifname: vrf_lb
+    table: 1000
+    state: present
+    conn_name: vrf_lb
+    method4: disabled
+    method6: disabled
+  when: "'lb' in inventory_hostname"
+
+- name: Install haproxy
+  ansible.builtin.dnf:
+    name: haproxy
+    state: present
+  when: "'lb' in inventory_hostname"
+
+- name: Deploy haproxy config
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  when: "'lb' in inventory_hostname"
+
+- name: Deploy systemd service haproxy
+  ansible.builtin.template:
+    src: haproxy.service.j2
+    dest: /etc/haproxy/haproxy.cfg
+  when: "'lb' in inventory_hostname"
+
+
