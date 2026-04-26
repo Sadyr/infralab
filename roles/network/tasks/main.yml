@@ -2,6 +2,7 @@
 - import_tasks: frr.yml
 - import_tasks: loopback.yml
 - import_tasks: lb.yml
+  tags: network.lb
 
 - import_tasks: br.yml
 - import_tasks: vxlan.yml

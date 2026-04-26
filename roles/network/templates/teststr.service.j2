@@ -1,0 +1,14 @@
+[Unit]
+Description=My Simple Python Test App
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/teststr
+Restart=always
+RestartSec=5
+
+StandardOutput=append:/var/log/teststr.log
+StandardError=append:/var/log/teststr.log
+
+[Install]
+WantedBy=multi-user.target

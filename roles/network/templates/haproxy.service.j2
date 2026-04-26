@@ -9,7 +9,7 @@ Environment="CONFIG=/etc/haproxy/haproxy.cfg" "PIDFILE=/run/haproxy.pid" "CFGDIR
 ExecStartPre= /sbin/ip vrf exec vrf_lb /usr/sbin/haproxy -f $CONFIG -f $CFGDIR -c -q $OPTIONS
 ExecStart= /sbin/ip vrf exec vrf_lb  /usr/sbin/haproxy -Ws -f $CONFIG -f $CFGDIR -p $PIDFILE $OPTIONS
 ExecReload= /sbin/ip vrf exec vrf_lb  /usr/sbin/haproxy -f $CONFIG -f $CFGDIR -c -q $OPTIONS
-ExecReload=/bin/kill -USR2 $MAINPID
+ExecReload= /bin/kill -USR2 $MAINPID
 KillMode=mixed
 SuccessExitStatus=143
 Type=notify

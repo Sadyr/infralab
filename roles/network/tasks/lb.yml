@@ -10,6 +10,13 @@
     method6: disabled
   when: "'lb' in inventory_hostname"
 
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
 - name: Install haproxy
   ansible.builtin.dnf:
     name: haproxy
@@ -21,11 +28,20 @@
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
   when: "'lb' in inventory_hostname"
+  notify:
+    - restart haproxy
 
 - name: Deploy systemd service haproxy
   ansible.builtin.template:
     src: haproxy.service.j2
-    dest: /etc/haproxy/haproxy.cfg
+    dest: /etc/systemd/system/haproxy.service
   when: "'lb' in inventory_hostname"
+  notify:
+    - daemon reload
 
-
+- name: Ensure haproxy is started and enabled
+  systemd_service:
+    name: haproxy
+    state: started
+    enabled: true
+  when: "'lb' in inventory_hostname"

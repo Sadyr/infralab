@@ -36,5 +36,7 @@ frontend main
 backend app
     mode http
     balance     roundrobin
-    server  app1 {{ ext_api_ip }}:5000
+    server str01 10.10.4.101:5000 check
+    server str02 10.10.4.102:5000 check
+    server str01 10.10.4.103:5000 check
 
