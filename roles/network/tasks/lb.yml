@@ -39,6 +39,13 @@
   notify:
     - daemon reload
 
+- ansible.posix.sysctl:
+    name: net.ipv4.tcp_l3mdev_accept
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
 - name: Ensure haproxy is started and enabled
   systemd_service:
     name: haproxy
