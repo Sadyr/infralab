@@ -8,6 +8,7 @@
     conn_name: vrf_anycast
     method4: disabled
     method6: disabled
+    zone: public
   when: "'lb' in inventory_hostname"
 
 - ansible.posix.sysctl:

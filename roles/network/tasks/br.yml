@@ -14,6 +14,7 @@
     type: bridge
     master: "{{ item['master'] | default(omit) }}"
     slave_type: "{{ item['slave_type'] | default(omit) }}"
+    zone: "{{ item['zone']| default(omit) }}"
   loop: "{{ network_bridges }}"
   when: network_bridges | length > 0
   tags: network.bridge
