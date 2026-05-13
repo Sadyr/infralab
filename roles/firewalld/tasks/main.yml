@@ -1,0 +1,45 @@
+---
+- name: Gather information about active zones
+  ansible.posix.firewalld_info:
+    active_zones: true
+  register: result
+
+- debug:
+    var:  result
+
+- meta: end_play
+
+- name: Ensure firewalld package is installed
+  ansible.builtin.dnf:
+    name: "firewalld"
+    state: "present"
+
+- name: Configure firewalld rich rules
+  ansible.posix.firewalld:
+    permanent: "{{ item['permanent'] | default(true) }}"
+    state: "{{ item['state'] | default('enabled') }}"
+    zone: "{{ item['zone'] | default('public') }}"
+    offline: "{{ item['offline'] | default(true) }}"
+    rich_rule: "{{ item['rule'] }}"
+    immediate: "{{ item['immediate'] | default(true) }}"
+  loop: "{{ firewalld_rich_rules }}"
+  when: firewalld_rich_rules | length != 0
+
+- name: Configure firewalld services
+  ansible.posix.firewalld:
+    permanent: "{{ item['permanent'] | default(true) }}"
+    state: "{{ item['state'] | default('enabled') }}"
+    zone: "{{ item['zone'] | default('public') }}"
+    offline: "{{ item['offline'] | default(true) }}"
+    service: "{{ item['name'] }}"
+    immediate: "{{ item['immediate'] | default(true) }}"
+  loop: "{{ firewalld_services }}"
+  when: firewalld_services | length != 0
+
+- name: Ensure firewalld service started and enable
+  ansible.builtin.systemd_service:
+    name: "firewalld"
+    state: "{{ firewalld['state'] }}"
+    enabled: "{{ firewalld['enabled'] }}"
+    masked: "{{ firewalld['masked'] }}"
+  when: firewalld | length != 0
