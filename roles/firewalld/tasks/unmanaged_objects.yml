@@ -40,5 +40,25 @@
         service: "{{ item['service'] }}"
         immediate: true
       loop:  "{{ __firewalld_unmanaged_objects['services'] | default([],true)}}"
+
+    - name: Clean unmanaged ports
+      ansible.posix.firewalld:
+        permanent: true
+        state: "disabled"
+        zone: "{{ item['zone'] }}"
+        offline: true
+        port: "{{ item['port'] }}"
+        immediate: true
+      loop:  "{{ __firewalld_unmanaged_objects['ports'] | default([],true)}}"
+
+    - name: Clean unmanaged protocols
+      ansible.posix.firewalld:
+        permanent: true
+        state: "disabled"
+        zone: "{{ item['zone'] }}"
+        offline: true
+        protocol: "{{ item['protocol'] }}"
+        immediate: true
+      loop:  "{{ __firewalld_unmanaged_objects['protocols'] | default([],true)}}"
   when: 
     - firewalld_unmanaged_objects_clean == true

@@ -50,3 +50,21 @@ ports:
 {% endif %}
 {% endif %}
 {% endfor %}
+
+protocols:
+{% for zone in __firewalld_active_zones %}
+{% if __firewalld_zones[zone]['protocols'] | length != 0 %}
+{% if firewalld_protocols | length != 0 %}
+{% for protocol in  __firewalld_zones[zone]['protocols'] | difference(firewalld_protocols | selectattr('zone', 'equalto', zone) | map(attribute='name')) %}
+  - protocol: {{ protocol }}
+    zone: {{ zone }}
+{% endfor %}
+{% else %}
+{% for protocol in __firewalld_zones[zone]['protocols'] %}
+  - protocol: {{ protocol }}
+    zone: {{ zone }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+

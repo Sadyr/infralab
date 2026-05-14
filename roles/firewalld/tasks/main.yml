@@ -8,6 +8,11 @@
 - ansible.builtin.import_tasks: services.yml
   tags: firewalld.services
 
+- ansible.builtin.import_tasks: ports.yml
+  tags: firewalld.ports
+
+- ansible.builtin.import_tasks: protocols.yml
+  tags: firewalld.protocols
 
 - name: Ensure firewalld service started and enable
   ansible.builtin.systemd_service:
@@ -18,5 +23,6 @@
   when: firewalld | length != 0
 
 - ansible.builtin.import_tasks: unmanaged_objects.yml
+  when:
+    - firewalld['state'] == "started"
   tags: firewalld.unmanaged_objects
-

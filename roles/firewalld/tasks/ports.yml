@@ -1,11 +1,11 @@
 ---
-- name: Configure firewalld rich rules
+- name: Configure firewalld ports
   ansible.posix.firewalld:
     permanent: "{{ item['permanent'] | default(true) }}"
     state: "enabled"
     zone: "{{ item['zone'] }}"
     offline: "{{ item['offline'] | default(true) }}"
-    rich_rule: "{{ item['rule'] }}"
+    port: "{{ item['port'] }}"
     immediate: "{{ item['immediate'] | default(true) }}"
-  loop: "{{ firewalld_rich_rules }}"
-  when: firewalld_rich_rules | length != 0
+  loop: "{{ firewalld_ports }}"
+  when: firewalld_services | length != 0

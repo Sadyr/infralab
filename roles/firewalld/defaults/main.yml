@@ -7,7 +7,11 @@ firewalld: {}
 #  masked: false
 
 firewalld_protocols: []
+# - name: gre
+#   zone: trusted
 firewalld_ports: []
+# - port: 80/tcp
+#   zone: public
 firewalld_rich_rules: []
 #  - rule: 'rule family="ipv4" destination address="5.5.5.5" port port="80" protocol="tcp" accept'
 #    zone: "public"

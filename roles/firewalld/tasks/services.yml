@@ -3,7 +3,7 @@
   ansible.posix.firewalld:
     permanent: "{{ item['permanent'] | default(true) }}"
     state: "enabled"
-    zone: "{{ item['zone'] | default('public') }}"
+    zone: "{{ item['zone'] }}"
     offline: "{{ item['offline'] | default(true) }}"
     service: "{{ item['name'] }}"
     immediate: "{{ item['immediate'] | default(true) }}"
