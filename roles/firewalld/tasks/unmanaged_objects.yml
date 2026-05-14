@@ -16,8 +16,9 @@
   ansible.builtin.set_fact:
     __firewalld_unmanaged_objects: "{{ lookup('ansible.builtin.template','unmanaged_objects.yml.j2') | from_yaml | default({},true) }}"
 
-- debug:
-    var: __firewalld_unmanaged_objects
+- name: Show firewalld unmanaged objects,if there not null value in items, they can be cleaned by pass variable firewalld_unmanaged_objects_clean=true
+  ansible.builtin.debug:
+    msg: "WARNING !!! This task show unmanage rich_rules,ports,services,protocols etc. If there ones, they could be cleaned by special boolean variable 'firewalld_unmanaged_objects_clean': {{ __firewalld_unmanaged_objects }}"
 
 - name: Handle when firewalld_unmanaged_objects_clean is true
   block:

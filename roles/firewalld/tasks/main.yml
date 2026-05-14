@@ -14,7 +14,7 @@
 - ansible.builtin.import_tasks: protocols.yml
   tags: firewalld.protocols
 
-- name: Ensure firewalld service started and enable
+- name: Ensure firewalld service started and enabled
   ansible.builtin.systemd_service:
     name: "firewalld"
     state: "{{ firewalld['state'] }}"

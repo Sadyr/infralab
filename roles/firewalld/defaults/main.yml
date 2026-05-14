@@ -15,7 +15,6 @@ firewalld_ports: []
 firewalld_rich_rules: []
 #  - rule: 'rule family="ipv4" destination address="5.5.5.5" port port="80" protocol="tcp" accept'
 #    zone: "public"
-#    state: "enabled"
 #    permanent: true
 #    offline: true
 #    immediate: true
@@ -23,7 +22,6 @@ firewalld_rich_rules: []
 firewalld_services: []
 #  - name: "ssh"
 #    zone: "public"
-#    state: "disabled"
 #    permanent: true
 #    offline: true
 #    immediate: true
