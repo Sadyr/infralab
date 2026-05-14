@@ -38,7 +38,7 @@ ports:
 {% for zone in __firewalld_active_zones %}
 {% if __firewalld_zones[zone]['ports'] | length != 0 %}
 {% if firewalld_ports | length != 0 %}
-{% for port in  __firewalld_zones[zone]['ports'] | difference(firewalld_ports | selectattr('zone', 'equalto', zone) | map(attribute='port')| map('join','/')) %}
+{% for port in  __firewalld_zones[zone]['ports'] | map('join','/') | difference(firewalld_ports | selectattr('zone', 'equalto', zone) | map(attribute='port'))%}
   - port: {{ port  }}
     zone: {{ zone }}
 {% endfor %}
