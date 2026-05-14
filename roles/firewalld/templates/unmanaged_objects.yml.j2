@@ -1,20 +1,52 @@
 ---
-{% for zone in __active_zones %}
-- zone: {{ zone }}
+rich_rules: 
+{% for zone in __firewalld_active_zones %}
 
-{% if __zones[zone]['rich_rules'] | length != 0 %}
+{% if __firewalld_zones[zone]['rich_rules'] | length != 0 %}
 {% if firewalld_rich_rules | length != 0 %}
-  rich_rules: {{ __zones[zone]['rich_rules'] | difference(firewalld_rich_rules | selectattr('zone', 'equalto', zone) | map(attribute='rule')) }}
+{% for rule in __firewalld_zones[zone]['rich_rules'] | difference(firewalld_rich_rules | selectattr('zone', 'equalto', zone) | map(attribute='rule')) %}
+  - rule: {{ rule }}
+    zone: {{ zone }}
+{% endfor %}
 {% else %}
-  rich_rules: { __zones[zone]['rich_rules']  }}
+{% for rule in __firewalld_zones[zone]['rich_rules']  %}
+  - rule: {{ rule }}
+    zone: {{ zone }}
+{% endfor %}
 {% endif %}
 {% endif %}
+{% endfor %}
 
-{% if __zones[zone]['services'] | length != 0 %}
+services:
+{% for zone in __firewalld_active_zones %}
+{% if __firewalld_zones[zone]['services'] | length != 0 %}
 {% if firewalld_services | length != 0 %}
-  services: {{ __zones[zone]['services'] | difference(firewalld_services | selectattr('zone', 'equalto', zone) | map(attribute='name')) }}
+{% for service in  __firewalld_zones[zone]['services'] | difference(firewalld_services | selectattr('zone', 'equalto', zone) | map(attribute='name')) %}
+  - service: {{ service }}
+    zone: {{ zone }}
+{% endfor %}
 {% else %}
-  services: {{ __zones[zone]['services'] }}
+{% for service in __firewalld_zones[zone]['services'] %}
+  - service: {{ service }}
+    zone: {{ zone }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+ports:
+{% for zone in __firewalld_active_zones %}
+{% if __firewalld_zones[zone]['ports'] | length != 0 %}
+{% if firewalld_ports | length != 0 %}
+{% for port in  __firewalld_zones[zone]['ports'] | difference(firewalld_ports | selectattr('zone', 'equalto', zone) | map(attribute='port')| map('join','/')) %}
+  - port: {{ port  }}
+    zone: {{ zone }}
+{% endfor %}
+{% else %}
+{% for port in __firewalld_zones[zone]['ports'] %}
+  - port: {{ port | join('/') }}
+    zone: {{ zone }}
+{% endfor %}
 {% endif %}
 {% endif %}
 {% endfor %}

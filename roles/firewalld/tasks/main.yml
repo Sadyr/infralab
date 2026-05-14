@@ -5,12 +5,12 @@
   register: __firewalld_info
 
 - ansible.builtin.set_fact:
-    __zones:  "{{ __firewalld_info['firewalld_info']['zones'] }}"
+    __firewalld_zones:  "{{ __firewalld_info['firewalld_info']['zones'] }}"
 
 - debug:
-    var: __zones
+    var: __firewalld_zones
 - ansible.builtin.set_fact:
-    __active_zones: "{{ __firewalld_info['collected_zones'] | list }}"
+    __firewalld_active_zones: "{{ __firewalld_info['collected_zones'] | list }}"
 
       #- debug:
       #    msg: "{{ __zones[item]['rich_rules'] | difference(firewalld_rich_rules | selectattr('zone', 'equalto', item) | map(attribute='rule')) }}"
@@ -21,8 +21,7 @@
     __firewalld_unmanaged_objects: "{{ lookup('ansible.builtin.template','unmanaged_objects.yml.j2') | from_yaml | default([],true) }}"
 
 - debug:
-    msg: "{{ item }} "
-  loop: "{{ __firewalld_unmanaged_objects  }}"
+    var: __firewalld_unmanaged_objects
 - meta: end_play
 
 - name: Ensure firewalld package is installed

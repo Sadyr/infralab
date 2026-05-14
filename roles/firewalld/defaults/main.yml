@@ -4,6 +4,8 @@ firewalld: {}
 #  enabled: true
 #  masked: false
 
+firewalld_protocols: []
+firewalld_ports: []
 firewalld_rich_rules: []
 #  - rule: 'rule family="ipv4" destination address="5.5.5.5" port port="80" protocol="tcp" accept'
 #    zone: "public"
