@@ -1,0 +1,20 @@
+---
+{% for zone in __active_zones %}
+- zone: {{ zone }}
+
+{% if __zones[zone]['rich_rules'] | length != 0 %}
+{% if firewalld_rich_rules | length != 0 %}
+  rich_rules: {{ __zones[zone]['rich_rules'] | difference(firewalld_rich_rules | selectattr('zone', 'equalto', zone) | map(attribute='rule')) }}
+{% else %}
+  rich_rules: { __zones[zone]['rich_rules']  }}
+{% endif %}
+{% endif %}
+
+{% if __zones[zone]['services'] | length != 0 %}
+{% if firewalld_services | length != 0 %}
+  services: {{ __zones[zone]['services'] | difference(firewalld_services | selectattr('zone', 'equalto', zone) | map(attribute='name')) }}
+{% else %}
+  services: {{ __zones[zone]['services'] }}
+{% endif %}
+{% endif %}
+{% endfor %}
