@@ -1,0 +1,44 @@
+---
+- name: Get firewalld configuration
+  ansible.posix.firewalld_info:
+    active_zones: true
+  register: __firewalld_info
+
+- name: Define variable with zones information
+  ansible.builtin.set_fact:
+    __firewalld_zones:  "{{ __firewalld_info['firewalld_info']['zones'] }}"
+
+- name: Define list with active zone names
+  ansible.builtin.set_fact:
+    __firewalld_active_zones: "{{ __firewalld_info['collected_zones'] | list }}"
+
+- name: Define variable with unmanaged_[rich_rules,services,protocols,ports,etc]
+  ansible.builtin.set_fact:
+    __firewalld_unmanaged_objects: "{{ lookup('ansible.builtin.template','unmanaged_objects.yml.j2') | from_yaml | default({},true) }}"
+
+- debug:
+    var: __firewalld_unmanaged_objects
+
+- name: Handle when firewalld_unmanaged_objects_clean is true
+  block:
+    - name: Clean unmanaged rich-rules
+      ansible.posix.firewalld:
+        permanent: true
+        state: "disabled"
+        zone: "{{ item['zone'] }}"
+        offline: true
+        rich_rule: "{{ item['rule'] }}"
+        immediate: true
+      loop: "{{ __firewalld_unmanaged_objects['rich_rules'] | default([],true)}}"
+
+    - name: Clean unmanaged services
+      ansible.posix.firewalld:
+        permanent: true
+        state: "disabled"
+        zone: "{{ item['zone'] }}"
+        offline: true
+        service: "{{ item['service'] }}"
+        immediate: true
+      loop:  "{{ __firewalld_unmanaged_objects['services'] | default([],true)}}"
+  when: 
+    - firewalld_unmanaged_objects_clean == true

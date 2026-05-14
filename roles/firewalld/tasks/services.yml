@@ -1,0 +1,12 @@
+---
+- name: Configure firewalld services
+  ansible.posix.firewalld:
+    permanent: "{{ item['permanent'] | default(true) }}"
+    state: "enabled"
+    zone: "{{ item['zone'] | default('public') }}"
+    offline: "{{ item['offline'] | default(true) }}"
+    service: "{{ item['name'] }}"
+    immediate: "{{ item['immediate'] | default(true) }}"
+  loop: "{{ firewalld_services }}"
+  when: firewalld_services | length != 0
+

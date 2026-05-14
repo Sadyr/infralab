@@ -1,4 +1,6 @@
 ---
+firewalld_unmanaged_objects_clean: false
+firewalld_package_state: "present"
 firewalld: {}
 #  state: "started"
 #  enabled: true

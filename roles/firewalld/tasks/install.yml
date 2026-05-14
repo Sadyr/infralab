@@ -1,0 +1,5 @@
+---
+- name: Ensure firewalld package is installed
+  ansible.builtin.dnf:
+    name: "firewalld"
+    state: "{{ firewalld_package_state }}"
