@@ -16,11 +16,18 @@
   ansible.builtin.set_fact:
     __firewalld_unmanaged_objects: "{{ lookup('ansible.builtin.template','unmanaged_objects.yml.j2') | from_yaml | default({},true) }}"
 
-- name: Show firewalld unmanaged objects,if there not null value in items, they can be cleaned by pass variable firewalld_unmanaged_objects_clean=true
-  ansible.builtin.debug:
-    msg: "WARNING !!! This task show unmanage rich_rules,ports,services,protocols etc. If there ones, they could be cleaned by special boolean variable 'firewalld_unmanaged_objects_clean': {{ __firewalld_unmanaged_objects }}"
+- name: Define variable if __firewalld_unmanaged_objects has not Null items
+  set_fact:
+    __firewalld_unmanaged_objects_empty: False
+  when: item[1] != None
+  loop: "{{ __firewalld_unmanaged_objects| items }}"
 
-- name: Handle when firewalld_unmanaged_objects_clean is true
+- name: Show firewalld unmanaged objects, they can be cleaned by pass variable firewalld_unmanaged_objects_clean=true
+  ansible.builtin.debug:
+    msg: "WARNING !!! This task show unmanage rich_rules,ports,services,protocols etc. They could be cleaned by special boolean variable 'firewalld_unmanaged_objects_clean': {{ __firewalld_unmanaged_objects }}"
+  when: __firewalld_unmanaged_objects_empty is defined
+
+- name: Handle when firewalld_unmanaged_objects_clean is true and __firewalld_unmanaged_objects_empty is defined and has value False
   block:
     - name: Clean unmanaged rich-rules
       ansible.posix.firewalld:
@@ -63,3 +70,4 @@
       loop:  "{{ __firewalld_unmanaged_objects['protocols'] | default([],true)}}"
   when: 
     - firewalld_unmanaged_objects_clean == true
+    - __firewalld_unmanaged_objects_empty is defined

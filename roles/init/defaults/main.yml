@@ -2,7 +2,7 @@
 init_timezone: UTC
 init_hosts_group: all
 
-init_packages_update: True
+init_packages_update: False
 init_packages_default:
   - tmux
   - git
