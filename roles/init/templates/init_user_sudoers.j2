@@ -1,0 +1,6 @@
+{% for user in  init_users %}
+{% if user['sudoers_rule'] is defined %}
+{{ user['name'] }} {{ user['sudoers_rule'] }}
+{% endif %}
+{% endfor %}
+

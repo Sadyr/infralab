@@ -1,4 +1,7 @@
 ---
+- import_tasks: user.yml
+  tags: init.user
+
 - import_tasks: dnf.yml
   tags: init.dnf
 

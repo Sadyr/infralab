@@ -1,0 +1,24 @@
+---
+- name: Ensure init user is present
+  ansible.builtin.user:
+    name: "{{ item['name'] }}"
+    password: "{{ item['password_hash'] | default(omit) }}"
+  loop: "{{ init_users }}"
+
+- name: Deploy authorized key for init user
+  ansible.posix.authorized_key:
+    user: "{{ item['name'] }}"
+    state: present
+    key: "{{ item['key'] }}"
+  when: item['key'] is defined
+  loop: "{{ init_users }}"
+
+- name: Deploy sudoers file for init user
+  ansible.builtin.template:
+    src: init_user_sudoers.j2
+    dest: "/etc/sudoers.d/init"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  loop: "{{ init_users }}"
+

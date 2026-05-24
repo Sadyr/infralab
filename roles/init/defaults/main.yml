@@ -1,9 +1,15 @@
 ---
 init_timezone: UTC
 init_hosts_group: all
+init_users: 
+  - name: "admin"
+    key: "Some public key"
+    sudoers_rule: "ALL=(ALL) ALL"
+    #password_hash: "Some hash value"
 
 init_packages_update: False
 init_packages_default:
+  - wget
   - tmux
   - git
   - vim
