@@ -1,0 +1,10 @@
+---
+nginx_packages:
+  - nginx
+  - certbot
+  - python3-certbot-nginx
+
+nginx_sites:
+  - rel_path: example.com/public
+    domain: example.com
+

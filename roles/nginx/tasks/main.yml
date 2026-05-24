@@ -1,0 +1,48 @@
+---
+- name: Ensure nginx is install
+  ansible.builtin.dnf:
+    name: "{{ nginx_packages }}"
+    state: present
+
+- name: Ensure site directory is present
+  ansible.builtin.file:
+    path: "/var/www/{{ item['rel_path'] }}"
+    state: directory
+    owner: "nginx"
+    group: "nginx"
+    mode: '0755'
+  loop: "{{ nginx_sites }}"
+
+- name: Ensure that config file for sites is tedployed
+  ansible.builtin.template:
+    src: "vhost.conf.j2"
+    dest: "/etc/nginx/conf.d/{{ item['domain'] }}.conf"
+  loop: "{{ nginx_sites }}"
+  notify:
+    - restart nginx
+
+- name: Set setypes for sites
+  community.general.sefcontext:
+    target: "/var/www/{{ item['domain'] }}(/.*)?"
+    setype: httpd_sys_content_t
+    state: present
+  loop: "{{ nginx_sites }}"
+
+- name: Restore context for sites
+  ansible.builtin.shell: "restorecon -vR /var/www/{{ item['domain'] }}"
+  loop: "{{ nginx_sites }}"
+  changed_when: false
+
+- name: Ensure that serivce nginx is started and enabled 
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: nginx
+
+- name: Generate letsencrypt certs
+  ansible.builtin.shell: "certbot --nginx -d {{ item['domain'] }} -d www.{{ item['domain'] }} --agree-tos"
+  loop: "{{ nginx_sites }}"
+  when: nginx_cert is defined
+  tags:
+    - never
+    - nginx.cert
