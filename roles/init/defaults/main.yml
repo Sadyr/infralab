@@ -1,6 +1,5 @@
 ---
 init_timezone: UTC
-init_hosts_group: all
 init_users: 
   - name: "admin"
     key: "Some public key"

@@ -1,0 +1,8 @@
+---
+- name: Deploy hosts file for managed nodes
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: "0644"
+    owner: root
+    group: root
