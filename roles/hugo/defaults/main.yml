@@ -1,0 +1,5 @@
+---
+hugo_version: 0.161.1
+hugo_package: https://github.com/gohugoio/hugo/releases/download/v{{ hugo_version }}/hugo_{{ hugo_version }}_Linux-64bit.tar.gz
+
+hugo_bin_dir: "/usr/local/sbin"

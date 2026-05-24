@@ -1,0 +1,25 @@
+---
+- name: Check if hugo is installed
+  stat:
+    path: "{{ hugo_bin_dir }}/hugo"
+  register: __hugo_bin_file
+
+- name: Get hugo version if installed
+  ansible.builtin.shell: "{{ hugo_bin_dir }}/hugo version |  cut -d 'v' -f 2 | cut -d '-' -f 1"
+  register: __hugo_version
+  changed_when: false
+  ignore_errors: true
+  when:
+    - __hugo_bin_file.stat.exists
+
+- name: Ensure hugo package is installed
+  ansible.builtin.unarchive:
+    src: "{{ hugo_package }}"
+    dest: "{{ hugo_bin_dir }}"
+    remote_src: yes
+    exclude:
+      - README.md
+      - LICENSE
+  when:
+    - not __hugo_bin_file.stat.exists or __hugo_version.stdout != hugo_version
+
