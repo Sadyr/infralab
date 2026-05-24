@@ -19,3 +19,10 @@
 
 - import_tasks: bash_profile.yml
   tags: init.bash_profile
+
+- import_tasks: reboot.yml
+  tags:
+    - never
+    - init.reboot
+  when: init_reboot is defined
+

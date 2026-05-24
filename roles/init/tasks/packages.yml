@@ -1,4 +1,9 @@
 ---
+- name: Upd kernel
+  ansible.builtin.dnf:
+    name: kernel
+    state: latest
+
 - name: Update system
   ansible.builtin.dnf:
     name: "*"
