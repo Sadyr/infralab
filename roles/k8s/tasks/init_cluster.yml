@@ -1,0 +1,9 @@
+- name: Init k8s cluster
+  ansible.builtin.command:
+    cmd: "/usr/bin/kubeadm init \
+      --control-plane-endpoint={{ k8s_api_address }}:{{ k8s_api_port }} \
+      --apiserver-advertise-address={{ k8s_api_address }} \
+      --service-cidr={{ k8s_service_cidr }} \
+      --pod-network-cidr={{ k8s_pod_network_cidr }} \
+      --apiserver-cert-extra-sans={{ k8s_api_address }}"
+

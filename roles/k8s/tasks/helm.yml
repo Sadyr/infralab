@@ -1,0 +1,17 @@
+---
+- name: Download Helm binary
+  ansible.builtin.unarchive:
+    src: "{{ item.url }}"
+    dest: /tmp
+    remote_src: true
+  when:
+  - item.name == "helm"
+  loop: "{{ k8s_package_urls }}"
+
+- name: Move Helm binary to /usr/local/bin
+  ansible.builtin.command:
+    cmd: "mv /tmp/linux-amd64/helm /usr/local/bin/helm"
+    creates: /usr/local/bin/helm
+
+
+

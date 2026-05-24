@@ -1,0 +1,36 @@
+---
+- name: Create config directory for containerd 
+  ansible.builtin.file:
+    path: "/etc/containerd/"
+    state: directory
+
+- name: Downoload and install containerd package
+  ansible.builtin.unarchive:
+    src: "{{ item.url }}"
+    dest: /usr/local/
+    remote_src: yes
+  when: item.name == "containerd"
+  loop: "{{ k8s_package_urls }}"
+
+- name: Deploy containerd config to managed hosts
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/containerd
+  notify:
+  - Restart containerd service
+  - Reload systemd-daemon
+
+- name: Deploy systemd unit for containerd.service
+  ansible.builtin.template:
+    src: containerd.service.j2
+    dest: /etc/systemd/system/containerd.service
+  notify:
+  - Restart containerd service
+  - Reload systemd-daemon
+
+- name: Start and enable containerd service on boot
+  ansible.builtin.systemd_service:
+    state: started
+    name: containerd
+    enabled: true
+

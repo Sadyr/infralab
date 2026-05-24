@@ -1,0 +1,43 @@
+---
+- name: Mkdir dir
+  ansible.builtin.file:
+    path: /etc/systemd/system/kubelet.service.d/
+    mode: 0755
+    state: directory
+    owner: root
+    group: root
+  when: some is defined
+
+- name: Deploy systemd override for kubelet
+  ansible.builtin.template:
+    src: kubelet-overrides.conf.j2
+    dest: /etc/systemd/system/kubelet.service.d/local-overrides.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Reload systemd-daemon
+  when: some is defined
+
+- name: Deploy kubelet config file
+  ansible.builtin.template:
+    src: kubelet-override.yml.j2
+    dest: /var/lib/kubelet/config_override.yaml
+  notify:
+    - restart kubelet
+  when: some is defined
+
+- name: Deploy kubelet sysconfig
+  ansible.builtin.template:
+    src: kubelet-sysconfig.j2
+    dest: /etc/sysconfig/kubelet
+  notify:
+    - restart kubelet
+      #  when: some is defined
+
+- name: Kubelet service is started and enabled on boot
+  ansible.builtin.systemd_service:
+    state: started
+    name: kubelet
+    enabled: true
+

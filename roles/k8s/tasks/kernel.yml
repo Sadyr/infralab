@@ -1,0 +1,39 @@
+---
+#- name: Load required modules
+#  community.general.modprobe:
+#    name: "{{ item }}"
+#    state: present
+#  loop:
+#    - ip_vs
+#    - ip_vs_rr
+#    - ip_vs_wrr
+#    - ip_vs_sh
+#    - br_netfilter
+#    - overlay
+
+#- name: Make modules permanent
+#  ansible.builtin.lineinfile:
+#    dest: /etc/modules-load.d/{{ item }}.conf
+#    line: "{{ item }}"
+#    create: true
+#  loop:
+#    - ip_vs
+#    - ip_vs_rr
+#    - ip_vs_wrr
+#    - ip_vs_sh
+#    - br_netfilter
+#    - overlay
+
+- name: Set required kernel parameters
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.conf
+    sysctl_set: true
+    reload: true
+  loop:
+    #   - net.bridge.bridge-nf-call-ip6tables
+    #   - net.bridge.bridge-nf-call-iptables
+    - net.ipv4.ip_forward
+

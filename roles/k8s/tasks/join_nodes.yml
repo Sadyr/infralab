@@ -1,0 +1,21 @@
+---
+- name: Generate join token
+  ansible.builtin.shell:
+    cmd: "kubeadm token create --print-join-command --ttl 15m | awk '{print $5}{print $7}'"
+  register: __k8s_join_token
+  delegate_to: "{{ k8s_initial_master }}"
+  run_once: true
+  changed_when: false
+
+- debug:
+    var: __k8s_join_token
+
+- name: Join worker nodes to cluster
+  ansible.builtin.shell:
+    cmd: "kubeadm join {{ k8s_api_address }}:{{ k8s_api_port }} \
+      --token {{ __k8s_join_token.stdout_lines[0] }} \
+      --discovery-token-ca-cert-hash {{ __k8s_join_token.stdout_lines[1] }}"
+  when: inventory_hostname in groups['k8s_worker']
+
+
+

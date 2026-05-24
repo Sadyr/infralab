@@ -1,0 +1,51 @@
+---
+- name: "Create ~/.kube/config directory"
+  ansible.builtin.file:
+    path: "/root/.kube"
+    state: directory
+    mode: '0700'
+
+- name: "Copy admin.conf to ~/.kube/config"
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/root/.kube/config"
+    remote_src: true
+    mode: "0700"
+
+- name: Template CNI manifest
+  ansible.builtin.template:
+    src: "calico.yml.j2"
+    dest: /etc/kubernetes/cni.yml
+  run_once: true
+
+- name: Apply CNI manifest
+  kubernetes.core.k8s:
+    src: /etc/kubernetes/cni.yml
+    namespace: kube-system
+    state: present
+    kubeconfig: /etc/kubernetes/admin.conf
+  run_once: true
+
+    #- name: Install calico
+    #  shell: "kubectl apply -f {{ k8s_calico_url }}"
+    #  register: calico_result
+
+    #- name: Show Calico apply output
+    #  debug:
+    #    var: calico_result.stdout_lines
+
+- name: Enable bash complection for all users
+  shell: kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+
+- name: Create alias for kubectl
+  shell: echo 'alias k=kubectl' >>~/.bashrc
+  become: False
+
+- name: Enable autocompletion for alias
+  shell: echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
+  become: False
+
+- name: Add kube.conf on user dir
+  shell:  "mkdir -p $HOME/.kube;  sudo cp  /etc/kubernetes/admin.conf $HOME/.kube/config ; sudo chown $(id -u):$(id -g) $HOME/.kube/config"
+  become: false
+

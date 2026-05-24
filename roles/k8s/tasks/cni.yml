@@ -1,0 +1,14 @@
+---
+- name: Create  directory for cni
+  ansible.builtin.file:
+    path: /opt/cni/bin
+    state: directory
+
+- name: Downoload and install cni plugins
+  ansible.builtin.unarchive:
+    src: "{{ item.url }}"
+    dest: /opt/cni/bin
+    remote_src: yes
+  when: item.name == "cni"
+  loop: "{{ k8s_package_urls }}"
+

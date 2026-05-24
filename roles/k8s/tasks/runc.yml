@@ -1,0 +1,9 @@
+---
+- name: Downoload and install runc package
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: /usr/local/sbin/runc
+    mode: 0755
+  when: item.name == "runc"
+  loop: "{{ k8s_package_urls }}"
+

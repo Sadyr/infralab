@@ -1,0 +1,19 @@
+---
+- name: Disable and stop firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: false
+    state: stopped
+    masked: true
+  ignore_errors: true
+
+- name: Disable swap in /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^(.*\sswap\s.*)$'
+    state: absent
+
+- name: Turn off swap
+  ansible.builtin.command:
+    cmd: swapoff -a
+  changed_when: false

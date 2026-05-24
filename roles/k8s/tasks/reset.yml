@@ -1,0 +1,6 @@
+---
+- name: Reset cluster
+  ansible.builtin.shell: kubeadm reset --force
+  tags:
+    - never
+    - k8s.reset

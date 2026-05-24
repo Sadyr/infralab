@@ -1,0 +1,47 @@
+---
+- ansible.builtin.import_tasks: prepare_host.yml
+  tags: k8s.prepare
+
+- ansible.builtin.import_tasks: install.yml
+  tags: k8s.install
+
+- ansible.builtin.import_tasks: kernel.yml
+  tags: k8s.kernel
+
+- ansible.builtin.import_tasks: containerd.yml
+  tags: k8s.containerd
+
+- ansible.builtin.import_tasks: runc.yml
+  tags: k8s.runc
+
+- ansible.builtin.import_tasks: cni.yml
+  tags: k8s.cni
+
+- ansible.builtin.import_tasks: kubelet.yml
+  tags: k8s.kubelet
+
+- name: Init cluster on initial master
+  ansible.builtin.import_tasks: init_cluster.yml
+  when: 
+  - k8s_init_cluster
+  - k8s_initial_master == inventory_hostname
+  tags: k8s.init
+
+- name: Setup kubectl config
+  ansible.builtin.import_tasks: config.yml
+  when:
+  - inventory_hostname in groups['k8s_master']
+  tags: k8s.kubectl
+
+- name: Join nodes to the init cluster
+  ansible.builtin.import_tasks: join_nodes.yml
+  tags: k8s.join
+
+- name: Install helm on master
+  ansible.builtin.import_tasks: helm.yml
+  when: inventory_hostname in groups['k8s_master']
+  tags: k8s.helm
+
+- name: Reset k8s cluster
+  ansible.builtin.import_tasks: reset.yml
+  when: k8s_reset is defined

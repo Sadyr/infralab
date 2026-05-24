@@ -1,0 +1,19 @@
+---
+- name: Add Kubernetes repositories
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    enabled: true
+    gpgcheck: true
+    baseurl: "{{ item.baseurl }}"
+    gpgkey: "{{ item.gpgkey }}"
+    exclude: "{{ item.exclude | default(omit) }}"
+  loop: "{{ k8s_repo_list }}"
+
+- name: Install k8s packages
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+    disable_excludes: all
+  loop: "{{ k8s_packages }}"
