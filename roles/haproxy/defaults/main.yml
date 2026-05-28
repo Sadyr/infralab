@@ -1,0 +1,4 @@
+---
+haproxy_packages:
+  - haproxy
+

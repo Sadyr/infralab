@@ -1,0 +1,37 @@
+---
+- name: Ensure required packages are installed
+  ansible.builtin.dnf:
+    name: "{{ haproxy_packages }}"
+    state: present
+
+- name: Ensure that /etc/haproxy/certs is present
+  ansible.builtin.file:
+    path: /etc/haproxy/certs
+    state: directory
+    mode: '0755'
+
+- name: Deploy certs
+  ansible.builtin.import_role:
+    name: sadyr0012.infralab.s3_file
+
+- name: Deploy config
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    validate: haproxy -c -f %s
+    mode: "0640"
+    backup: true
+  notify:
+    - Restart haproxy
+
+- name: Allow haproxy to open any port
+  ansible.posix.seboolean:
+    name: haproxy_connect_any
+    state: true
+    persistent: true
+
+- name: Start and enable haproxy
+  ansible.builtin.service:
+    name: haproxy
+    state: started
+    enabled: true
