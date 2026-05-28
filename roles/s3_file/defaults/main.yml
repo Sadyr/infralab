@@ -1,0 +1,10 @@
+---
+s3_file_config: {}
+#  access_key: <access key> 
+#  secret_key: <secret key>
+#  bucket: "mybucket"
+#  endpoint_url: "https://s3.example.com"
+
+#s3_file:
+#  - object: "pets/cat.png"
+#    dest: /opt/cat.png

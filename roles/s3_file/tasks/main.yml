@@ -1,0 +1,22 @@
+---
+- name: Install pip
+  ansible.builtin.dnf:
+    name: pip
+    state: present
+
+- name: Install boto3 python package
+  ansible.builtin.pip:
+    name: boto3
+    state: present
+
+- name: Get object from s3
+  amazon.aws.s3_object:
+    access_key: "{{ s3_file_config['access_key'] }}"
+    secret_key: "{{ s3_file_config['secret_key'] }}"
+    bucket: "{{ s3_file_config['bucket'] }}"
+    endpoint_url: "{{ s3_file_config['endpoint_url'] }}"
+    mode: "get"
+    region: "{{ s3_file_config['region'] | default(omit) }}"
+    object: "{{ item['object'] }}"
+    dest: "{{ item['dest'] }}"
+  loop: "{{ s3_file }}"
