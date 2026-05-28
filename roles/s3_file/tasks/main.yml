@@ -18,5 +18,5 @@
     mode: "get"
     region: "{{ s3_file_config['region'] | default(omit) }}"
     object: "{{ item['object'] }}"
-    dest: "{{ item['dest'] }}"
+    dest: "{{ item['dest'] }}/{{ item['object'] | basename }}"
   loop: "{{ s3_file }}"
