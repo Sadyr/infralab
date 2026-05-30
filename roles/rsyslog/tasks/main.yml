@@ -1,0 +1,21 @@
+---
+- name: Ensure rsyslog package is installed
+  ansible.builtin.dnf:
+    name: rsyslog
+    state: present
+
+- name: Deploy rsyslog config file
+  ansible.builtin.template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    mode: "0644"
+    owner: root
+    group: root
+  notify:
+    - Restart rsyslog
+
+- name: Ensure rsyslog is started and enabld
+  ansible.builtin.systemd_service:
+    name: rsyslog
+    state: started
+    enabled: true
