@@ -1,5 +1,5 @@
 global
-    log         127.0.0.1 local2
+    log         127.0.0.1:514 local0
     chroot      /var/lib/haproxy
     pidfile     /var/run/haproxy.pid
     maxconn     4000
@@ -32,9 +32,19 @@ defaults
 frontend http-in
     bind 0.0.0.0:80
     mode http
+    log-format "%[var(txn.host)] %ci:%cp %f %b %{+Q}r %ST %U %Tt"
+    http-request set-var(txn.host) hdr(Host)
     redirect scheme https code 301 if !{ ssl_fc }
 
 frontend https-in
     bind 0.0.0.0:443 ssl crt /etc/haproxy/certs/
     mode http
+    log-format "%[var(txn.host)] %ci:%cp %f %b %{+Q}r %ST %U %Tt"
+    http-request set-var(txn.host) hdr(Host)
+    use_backend %[req.hdr(host),lower,map(/etc/haproxy/maps/hosts.map)]
 
+backend static
+    mode http
+    balance roundrobin
+    option forwardfor
+    server static  10.10.0.112:80

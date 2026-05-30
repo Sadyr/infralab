@@ -10,9 +10,22 @@
     state: directory
     mode: '0755'
 
+- name: Ensure that /etc/haproxy/maps is present
+  ansible.builtin.file:
+    path: /etc/haproxy/maps
+    state: directory
+    mode: '0755'
+
 - name: Deploy certs
   ansible.builtin.import_role:
     name: sadyr0012.infralab.s3_file
+
+- name: Deploy hosts.map
+  ansible.builtin.template:
+    src: hosts.map.j2
+    dest: /etc/haproxy/maps/hosts.map
+  notify:
+    - Reload haproxy
 
 - name: Deploy config
   ansible.builtin.template:
@@ -20,7 +33,8 @@
     dest: /etc/haproxy/haproxy.cfg
     validate: haproxy -c -f %s
     mode: "0640"
-    backup: true
+  tags:
+    - haproxy.config
   notify:
     - Restart haproxy
 
