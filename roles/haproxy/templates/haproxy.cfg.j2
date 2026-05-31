@@ -29,22 +29,21 @@ defaults
     timeout check           10s
     maxconn                 3000
 
-frontend http-in
-    bind 0.0.0.0:80
-    mode http
-    log-format "%[var(txn.host)] %ci:%cp %f %b %{+Q}r %ST %U %Tt"
-    http-request set-var(txn.host) hdr(Host)
-    redirect scheme https code 301 if !{ ssl_fc }
+{% for vhost in haproxy_vhosts %}
 
-frontend https-in
-    bind 0.0.0.0:443 ssl crt /etc/haproxy/certs/
-    mode http
-    log-format "%[var(txn.host)] %ci:%cp %f %b %{+Q}r %ST %U %Tt"
-    http-request set-var(txn.host) hdr(Host)
-    use_backend %[req.hdr(host),lower,map(/etc/haproxy/maps/hosts.map)]
+{% for frontend in vhost['frontends'] %}
+frontend {{ frontend['name'] }}
+{% for option in frontend['options'] %}
+    {{ option }}
+{% endfor %}
 
-backend static
-    mode http
-    balance roundrobin
-    option forwardfor
-    server static  10.10.0.112:80
+{% endfor %}
+
+{% for backend in vhost['backends'] %}
+backend {{ backend['name'] }}
+{% for option in backend['options'] %}
+    {{ option }}
+{% endfor %}
+{% endfor %}
+
+{% endfor %}

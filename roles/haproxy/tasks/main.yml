@@ -24,6 +24,8 @@
   ansible.builtin.template:
     src: hosts.map.j2
     dest: /etc/haproxy/maps/hosts.map
+  tags:
+    - haproxy.config
   notify:
     - Reload haproxy
 

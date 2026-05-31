@@ -1,4 +1,4 @@
 ---
 haproxy_packages:
   - haproxy
-
+haproxy_vhosts: {}
