@@ -29,6 +29,16 @@
   notify:
     - Reload haproxy
 
+- name: Deploy rsyslog config file
+  ansible.builtin.template:
+    src: haproxy.rsyslog.conf.j2
+    dest: /etc/rsyslog.d/haproxy.conf
+    mode: "0644"
+    owner: root
+    group: root
+  notify:
+    - Restart rsyslog
+
 - name: Deploy config
   ansible.builtin.template:
     src: haproxy.cfg.j2

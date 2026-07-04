@@ -9,3 +9,7 @@
     name: haproxy
     state: reloaded
 
+- name: Restart rsyslog
+  ansible.builtin.systemd_service:
+    name: rsyslog
+    state: restarted

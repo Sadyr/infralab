@@ -1,0 +1,5 @@
+template(name="haproxy" type="string" string="%timestamp%%msg%\n")
+if $programname == 'haproxy' then {
+    action(type="omfile" file="/var/log/haproxy/haproxy.log" template="haproxy")
+    stop
+}
