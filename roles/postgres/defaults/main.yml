@@ -1,0 +1,5 @@
+---
+postgres_version: 18
+postgres_port: 5432
+postgres_cluster_name: "pg-v{{ postgres_version }}"
+postgres_max_connections: 100

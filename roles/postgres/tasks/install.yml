@@ -1,0 +1,10 @@
+---
+- name: Disable builtin postgres package modules
+  ansible.builtin.command: dnf -qy module disable postgresql
+  changed_when: false
+
+- name: Add PostgreSQL GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ item }}"
+  loop: "{{ postgres_package_gpgkeys }}"
