@@ -7,6 +7,7 @@ init_users:
     #password_hash: "Some hash value"
 
 init_packages_update: False
+init_kernel_update: False
 init_packages_default:
   - wget
   - tmux

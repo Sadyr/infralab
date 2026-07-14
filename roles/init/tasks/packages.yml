@@ -3,6 +3,7 @@
   ansible.builtin.dnf:
     name: kernel
     state: latest
+  when: init_kernel_update | bool == True
 
 - name: Update system
   ansible.builtin.dnf:
