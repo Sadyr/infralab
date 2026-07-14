@@ -1,0 +1,18 @@
+---
+- name: Ensure PostgreSQL required dirs is present
+  ansible.builtin.file:
+    path: "{{ item['path'] }}"
+    owner: "{{ postgres_service_user }}"
+    group: "{{ postgres_service_group }}"
+    state: "directory"
+    mode: "{{ item['mode'] }}"
+  loop: "{{ postgres_dirs }}"
+
+- name: Ensure PostgreSQL unix socket dirs is present
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "{{ postgres_service_user }}"
+    group: "{{ postgres_service_group }}"
+    mode: "0755"
+  loop: "{{ postgres_unix_socket_dirs }}"

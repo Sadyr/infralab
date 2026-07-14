@@ -5,3 +5,7 @@
   tags: always
 
 - ansible.builtin.import_tasks: install.yml
+  tags: postgres.install
+
+- ansible.builtin.import_tasks: dirs.yml
+  tags: postgres.dirs

@@ -1,21 +1,35 @@
 ---
 postgres_base_dir: "/var/lib/pgsql"
-postgre_data_dir: "{{ postgres_base_dir }}/{{ postgres_version }}/data"
+postgres_data_dir: "{{ postgres_base_dir }}/{{ postgres_version }}/data"
 postgres_log_dir: "/var/log/postgresql/{{ postgres_version }}"
+postgres_bin_dir: "/usr/pgsql-{{ postgres_version }}/bin"
+postgres_pid_dir: "/var/run/postgresql"
+postgres_conf_dir: "{{ postgres_base_dir }}/{{ postgres_version }}/data"
+postgres_archive_dir: "{{ postgres_base_dir }}/{{ postgres_version }}/archive"
 
-postgres_mirror: "https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-9.8-x86_64/"
+postgres_dirs:
+  - path: "{{ postgres_data_dir }}"
+    mode: "0700"
+  - path: "{{ postgres_log_dir }}"
+    mode: "0700"
+  - path: "{{ postgres_archive_dir }}"
+    mode: "0755"
+  - path: "{{ postgres_conf_dir }}"
+    mode: "0700"
+  - path: "{{ postgres_pid_dir }}"
+    mode: "0755"
+
+postgres_mirror: "https://download.postgresql.org/pub/repos/yum"
 postgres_packages:
-  - "{{ 'postgresql' + postgres_version + '-server' }}"
-  - "{{ 'postgresql' + postgres_version + '-contrib' }}"
+  - "{{ 'postgresql' + postgres_version | string + '-server' }}"
+  - "{{ 'postgresql' + postgres_version | string + '-contrib' }}"
   - "python3-psycopg2"
 
 postgres_service_user: "postgres"
 postgres_service_group: "postgres"
 postgres_service_name: "{{ 'postgresql-'+ postgres_version }}"
-postgres_pid_dir: "/var/run/postgresql"
 postgres_unix_socket_dirs: ["{{ postgres_pid_dir }}"]
 postgres_external_pid_file: "{{ postgres_pid_dir }}/{{ postgres_cluster_name }}.pid"
-postgres_conf_dir: "{{ postgres_base_dir }}/{{ postgres_version }}/data"
 
 postgres_package_gpgkeys:
 - "{{ postgres_mirror }}/keys/PGDG-RPM-GPG-KEY-RHEL"
@@ -23,12 +37,10 @@ postgres_package_gpgkeys:
 postgres_package_repos:
 - name: postgresql-common
   description: "Postgresql common RPMs for RHEL"
-  baseurl: "{{ postgres_package_mirror }}/common/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+  baseurl: "{{ postgres_mirror }}/common/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 - name: "postgresql-{{ postgres_version }}"
   description: "PostgreSQL {{ postgres_version }} for RHEL"
-  baseurl:  "{{ postgres_package_mirror }}/{{ postgres_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
-
-postgres_bin_dir: "/usr/pgsql-{{ postgres_version }}/bin"
+  baseurl:  "{{ postgres_mirror }}/{{ postgres_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 
 postgres_hba_defaults:
   - type: "local"
