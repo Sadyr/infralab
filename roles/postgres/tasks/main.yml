@@ -1,0 +1,7 @@
+---
+- name: Collect required facts
+  ansible.builtin.setup:
+    gather_subset: ['!all','!min','distribution','architecture']
+  tags: always
+
+- ansible.builtin.import_tasks: install.yml

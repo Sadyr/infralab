@@ -8,3 +8,31 @@
     state: present
     key: "{{ item }}"
   loop: "{{ postgres_package_gpgkeys }}"
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Define variable with all installed packages on maanaged node
+  ansible.builtin.set_fact:
+    __postgres_packages_on_host: "{{ ansible_facts.packages | dict2items | map(attribute='key') }}"
+
+- name: Check whether the all packages from postgres_packages is installed
+  ansible.builtin.set_fact:
+    __postgres_packages_installed: "{{ postgres_packages | intersect(__postgres_packages_on_host) | unique | sort }}"
+
+- name: Add PostgreSQL repos
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    enabled: true
+    gpgcheck: true
+    baseurl: "{{ item.baseurl }}"
+  loop: "{{ postgres_package_repos }}"
+
+- name: Ensure PostgreSQL packages are installed
+  ansible.builtin.dnf:
+    name: "{{ postgres_packages }}"
+    state: "present"
+    update_cache: true
+  when: postgres_packages | unique | sort is not eq(__postgres_packages_installed)
