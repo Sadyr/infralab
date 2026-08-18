@@ -22,3 +22,9 @@
     mode: "0644"
   loop: "{{ init_users }}"
 
+- name: Add users to their specified groups
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups | join(',') }}"
+    append: yes
+  loop: "{{ init_users }}"
